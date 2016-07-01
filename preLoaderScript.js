@@ -2,14 +2,14 @@
 
      /*
      *      @project - PreLoader
-     *	    @author - Kyle Johnson <kyle.johnson@emu.edu>
+     *	    @author - Kyle Johnson <kyle.johnson@myfela.com>
      *
      *  	This plug-in allows you to customize many options of a PreLoader or Pop-up
      *
      *  	The options to this plug-in are:
      *	-closeButton: 'true' for a closeButton to appear at the top-right of a modal box, 'false' will auto shut the loader
      *	-content: The information sent in this will determine the text that is shown
-     *	-logo: you can decide which logo appears in the loader by sending in a name
+     *	-logo: you can decide which logo appears in the loader by sending choosing 'FELA' or 'LifeCents'
      *	-style: by sending in 'horizontal' or 'circular' will determine loader shown
      *	-percent: 'true' will show the percent completed, 'false' will not
      *	-blur: 'true' will blur the background, 'false' will give it a white background
@@ -18,8 +18,8 @@
      *	-title: the information sent it will show under the message layout
      * 	-closeInfo: if closeButton is 'true', the information sent in this will display a close button at the bottom of the loader
      *	-autoGen: if 'true' will automatically generate random strings from the 'stats.json' JSON file attached
-     *	-height & width: pass in the wanted height or width for your modal box (100px, 10%, 
-     *	etc.)
+	 *	-height & width: pass in the wanted height or width for your modal box (100px, 10%, 
+	 *	etc.)
      *
      *
      *	<link href="preLoaderCSS.css" type="text/css" rel="stylesheet">
@@ -62,7 +62,7 @@
          var defaults = {
              closeButton: false,
              content: "",
-             logo: "default",
+             logo: "new",
              style: "horizontal",
              percent: true,
              blur: false,
@@ -71,8 +71,8 @@
              title: "",
              closeText: "",
              autoGen: true,
-             height: "500px",
-             width: "750px"
+             height: "50%",
+             width: "60%"
          };
 
          //create options by taking in passed in arguments and extending defaults
@@ -95,9 +95,9 @@
       */
      function buildLoader() {
          var contentHolder, logoHolder, loader, newlogo, modalBox, titleHolder, closeHolder, percentHolder, infoHolder, wrapper, init, getProgress, ready;
-
-         ready = false;
-
+	
+		 ready = false;
+		 
          var docFrag = document.createDocumentFragment();
 
          //Creates the <div> that we will build the loader in
@@ -150,9 +150,9 @@
              $("img").one("load", function() {
                  count = count + 1;
                  var currentPercent = count / numImages * 100;
-                 if (currentPercent === 100) {
-                     ready = true;
-                 }
+				 if(currentPercent===100){
+					 ready = true;
+				 }
                  callback(Math.round(currentPercent));
              }).each(function() {
                  if (this.complete) $(this).load();
@@ -210,16 +210,18 @@
          };
 
          /**
-          * This function will get our Logo's location based on the logo parameter name passed in. Works better if image is in file.
+          * This function will get our Logo's location based on the logo parameter name passed in
           * @function getLogo
           * @param {string} logo
           */
          function getLogo(logo) {
-             if (logo === "default") {
-                 newlogo = "https://upload.wikimedia.org/wikipedia/commons/a/ab/Logo_TV_2015.png";
-             } else if (logo === "") {
-                 newlogo = "";
-             }
+             if (logo === "FELA") {
+                 newlogo = "FELA-Web-Logo.png";
+             } else if (logo === "LifeCents") {
+                 newlogo = "LifeCents-Web-Logo.png";
+             } else if (logo=== "new"){
+				 newlogo = "https://upload.wikimedia.org/wikipedia/commons/a/ab/Logo_TV_2015.png";
+			 }
          };
 
          /**
@@ -228,11 +230,13 @@
           * @param {string} logo
           */
          function getLogoStyle(logo) {
-             if (logo === "default") {
+			 if (logo === "LifeCents") {
                  $(logoHolder).css("top", "110px");
-             } else if (logo === "") {
-                 $(logoHolder).css("left", "10px");
-             }
+             } else if (logo === "FELA"){
+				 $(logoHolder).css("left", "10px");
+			 } else if(logo=== "new"){
+				 $(logoHolder).css("position: relative !important; top: 24px !important;");
+			 }
          };
 
          /**
@@ -325,9 +329,9 @@
                  window.onclick = function(event) {
                      var modal = document.getElementById("preloaderHolder");
                      if (event.target === modal) {
-                         if (ready === true) {
-                             init();
-                         }
+						 if(ready === true){
+							 init();
+						 }
                      }
                  };
              } else {
@@ -346,7 +350,8 @@
           */
          function getMessage(message, autoGen, preloader, title, content) {
              if (message === true) {
-                 $(preloader).attr("style", "width: 38%");
+                 $(preloader).css("width", "38%");
+				 $(preloader).css("padding-left"," 4%");
                  titleHolder = document.createElement("div");
                  $titleHolder = $(titleHolder);
                  $titleHolder.addClass("preloaderTitle");
@@ -371,10 +376,14 @@
              }
              //If autoGen is true but message is 'false' we then add the text to our first contentHolder <div>
              else if (autoGen === true) {
+				 $(logoHolder).css("padding-top", "9%");
                  obj = JSON.parse(auto);
                  $contentHolder = ($contentHolder);
                  $contentHolder.text(obj[Math.floor(Math.random() * obj.length)].message);
              }
+			 else{
+				$(logoHolder).css("padding-top", "9%");
+			 }
          };
 
          /**
@@ -423,7 +432,7 @@
 
                      var button = document.createElement("img");
                      $button = $(button);
-                     $button.addClass("preLoaderCloser");
+					 $button.addClass("preLoaderCloser");
                      $button.attr("id", "preLoaderCloser");
                      $button.attr("style", "top: 0px; right:0px;");
                      $button.attr("src", "close-icon.png");
@@ -459,12 +468,13 @@
 
  var myLoader = new this.Preloader({
      closeButton: true,
-     closeText: 'Close this...',
      box: true,
      message: true,
      blur: true,
-     style: "circular",
-     autoGen: true
+	 style: "circular",
+	 autoGen: true,
+	 closeText: "Close"
+
  });
 
  myLoader.open();
