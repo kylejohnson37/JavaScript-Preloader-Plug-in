@@ -11,8 +11,8 @@ If you want to generate random facts then you have to make sure you are calling 
 
 <b> Different Designs:</b>
 <div width="100%">
-<img src="https://s31.postimg.org/ji69vqaxn/plugin2.png" alt="JavaScript Plugin Design" height="371px" width="65%" style="padding-left: 10%;"/>
-<img src="https://s32.postimg.org/4byjn40ol/plugin.png" alt="JavaScript Plugin Design" height="371px" width="80%" style="padding-left: 10%;"/>
+<img src="https://s31.postimg.org/fwgwxbguz/nimbus_record_video_1.gif"/>
+<img src="https://s32.postimg.org/7y4puxd45/Preloader.gif"/>
 </div>
 <b> How to change what is shown </b><br>
 var myLoader = new Preloader({<br>
