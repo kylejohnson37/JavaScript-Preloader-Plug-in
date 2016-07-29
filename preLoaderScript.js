@@ -16,7 +16,7 @@
      *	-box: 'true' will display a modal box for the preloader
      *	-message: 'true' will change the layout of the preloader and make room for a 'title' and 'content'
      *	-title: the information sent it will show under the message layout
-     * 	-closeInfo: if closeButton is 'true', the information sent in this will display a close button at the bottom of the loader
+     * 	-closeText: if closeButton is 'true', the information sent in this will display a close button at the bottom of the loader
      *	-autoGen: if 'true' will automatically generate random strings from the 'stats.json' JSON file attached
 	 *	-height & width: pass in the wanted height or width for your modal box (100px, 10%, 
 	 *	etc.)
@@ -120,12 +120,8 @@
          logoHolder = document.createElement("img");
          $logoHolder = $(logoHolder)
          $logoHolder.attr("src", newlogo);
+         $logoHolder.attr("id", this.options.logo);
          $logoHolder.addClass("preloaderLogo");
-
-         getLogoStyle(this.options.logo);
-
-         //Adds our 'cs-loader' <div>
-         $(this.preloader).append(logoHolder);
 
 
          //Creates a <div> that will hold the content passed in and adds it to our 'cs-loader' <div>
@@ -133,7 +129,6 @@
          $contentHolder = $(contentHolder);
          $contentHolder.addClass("preloaderContent");
          $contentHolder.text(this.options.content);
-         $(this.preloader).append(contentHolder);
 
          getLoaderStyle(this.options.style, this.preloader);
 
@@ -150,9 +145,9 @@
              $("img").one("load", function() {
                  count = count + 1;
                  var currentPercent = count / numImages * 100;
-				 if(currentPercent===100){
-					 ready = true;
-				 }
+                 if(currentPercent===100){
+                     ready = true;
+                 }
                  callback(Math.round(currentPercent));
              }).each(function() {
                  if (this.complete) $(this).load();
@@ -160,6 +155,11 @@
          };
 
          getPercent(this.options.percent, this.options.style, this.preloader);
+
+         //Adds our 'cs-loader' <div>
+         $(this.preloader).append(logoHolder);
+         $(this.preloader).append(percentHolder);
+         $(this.preloader).append(contentHolder);
 
          getModalBox(this.options.box, this.preloader, this.options.height, this.options.width);
 
@@ -215,27 +215,12 @@
           * @param {string} logo
           */
          function getLogo(logo) {
-             if (logo === "FELA") {
+             if (logo === "fela") {
                  newlogo = "FELA-Web-Logo.png";
-             } else if (logo === "LifeCents") {
+             } else if (logo === "lifecents") {
                  newlogo = "LifeCents-Web-Logo.png";
              } else if (logo=== "new"){
 				 newlogo = "https://upload.wikimedia.org/wikipedia/commons/a/ab/Logo_TV_2015.png";
-			 }
-         };
-
-         /**
-          * This function sets our logo's style attribute to center with the loader
-          * @function getLogoStyle
-          * @param {string} logo
-          */
-         function getLogoStyle(logo) {
-			 if (logo === "LifeCents") {
-                 $(logoHolder).css("top", "110px");
-             } else if (logo === "FELA"){
-				 $(logoHolder).css("left", "10px");
-			 } else if(logo=== "new"){
-				 $(logoHolder).css("position: relative !important; top: 24px !important;");
 			 }
          };
 
@@ -271,6 +256,7 @@
                  $(spinner).addClass("spinner");
                  $preloader.append(spinner);
              }
+
          };
 
          /**
@@ -286,21 +272,20 @@
              if (percent === true) {
                  percentHolder = document.createElement("div");
                  $percentHolder = $(percentHolder);
-                 $percentHolder.addClass("percentHolder");
+                 $percentHolder.attr("id", "percentHolder");
                  $percentHolder.text("0%");
-                 $(preloader).append($percentHolder);
                  if (style === "circular") {
-                     $percentHolder.attr("style", "position: relative;");
                  }
 
                  //calls the function that returns the percent completed
                  //located at bottom of plug-in
                  getProgress(function(percentComplete) {
-                     $(".percentHolder").text(percentComplete + "%");
+                     $("#percentHolder").text(percentComplete + "%");
                  });
              } else {
                  getProgress(function() {});
              }
+
          };
 
          /**
@@ -351,7 +336,8 @@
          function getMessage(message, autoGen, preloader, title, content) {
              if (message === true) {
                  $(preloader).css("width", "38%");
-				 $(preloader).css("padding-left"," 4%");
+				 $(preloader).css("margin-left"," 4%");
+                 $(preloader).css("margin-top"," 9%");
                  titleHolder = document.createElement("div");
                  $titleHolder = $(titleHolder);
                  $titleHolder.addClass("preloaderTitle");
@@ -365,7 +351,6 @@
 
                  if (autoGen === true) {
                      obj = JSON.parse(auto);
-
                      $infoHolder.text(obj[Math.floor(Math.random() * 3)].message);
                  } else {
                      $infoHolder.text(content);
@@ -376,14 +361,10 @@
              }
              //If autoGen is true but message is 'false' we then add the text to our first contentHolder <div>
              else if (autoGen === true) {
-				 $(logoHolder).css("padding-top", "9%");
                  obj = JSON.parse(auto);
                  $contentHolder = ($contentHolder);
                  $contentHolder.text(obj[Math.floor(Math.random() * obj.length)].message);
              }
-			 else{
-				$(logoHolder).css("padding-top", "9%");
-			 }
          };
 
          /**
@@ -472,8 +453,12 @@
      message: true,
      blur: true,
 	 style: "circular",
-	 autoGen: true,
-	 closeText: "Close"
+     title: "Here is the title",
+     content: "Here is where content is changed",
+     autoGen: true,
+	 closeText: "Close",
+     logo: "new",
+     percent: false
 
  });
 
